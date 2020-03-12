@@ -108,7 +108,7 @@ def getItems(offset = None):
 
 count = 0
 all_organizations = []
-all_organizations, next_bundle, more = get_organizations(input_data['api_token'],700}
+all_organizations, next_bundle, more = get_organizations(input_data['api_token'])
 while more and more != "None":
     more_organizations, next_bundle, more = get_organizations(input_data['api_token'], next_bundle)
     all_organizations.extend(more_organizations)    
@@ -127,11 +127,10 @@ for p in pipelines:
 valid_status  = {}
 company_type_dict = get_organizational_field(input_data['api_token'], '4040') 
 for item in company_type_dict['options']:
-    print(item)
     if item['label'] in input_data['type'].split(","):    
         valid_status[item['id']] = item['label']       
 organizational_field_key = company_type_dict['key']
-print(valid_status)
+print(organizational_field_key)
 
 for o in all_organizations:
     go_ahead = 'False'   
@@ -144,19 +143,19 @@ for o in all_organizations:
         company_type = org_det[organizational_field_key]
     else:
         go_ahead = 'False'
-        company_type = None
+        combpany_type = None
+        print(org_det[organizational_field_key])
     if org_det[organizational_field_key] is not None:
         o_status = org_det[organizational_field_key].split(",") # it can contain several values    
-        if "211" in o_status:
-            print(o['name'])
-            for s in o_status:
-                print(o_status)
-                if s in valid_status:
-                    go_ahead = 'True'
-                    company_type = valid_status[org_det[organizational_field_key]]
-                    print("Status OK" + s)
-                    stage_id  = get_deal_by_id(input_data['api_token'],org_det ['last_activity']['deal_id'] )['stage_id']
-                    pipeline_id = get_stage_by_id(input_data['api_token'], stage_id )['pipeline_id'] 
+        print(o['name'])
+        for s in o_status:
+            print(o_status)
+            if s in valid_status:
+                go_ahead = 'True'
+                company_type = valid_status[org_det[organizational_field_key]]
+                print("Status OK" + s)
+                stage_id  = get_deal_by_id(input_data['api_token'],org_det ['last_activity']['deal_id'] )['stage_id']
+                pipeline_id = get_stage_by_id(input_data['api_token'], stage_id )['pipeline_id'] 
 
 
     #             #num_deals, start, more = get_deals_in_pipeline(input_data['api_token'], )
